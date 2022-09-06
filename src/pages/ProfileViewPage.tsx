@@ -1,15 +1,8 @@
-import {
-  AppShell,
-  Avatar,
-  Center,
-  Container,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
-import ProfileLinkViewCard from '../components/ProfileLinkViewCard';
+import { Avatar, Center, Container, Stack, Text, Title } from '@mantine/core';
 import { Link } from '../types/link.types';
 import { Profile } from '../types/profile.types';
+import AppContainer from '../components/AppContainer';
+import ProfileLinkViewCard from '../components/ProfileLinkViewCard';
 
 const profile: Profile = {
   _id: '63155369a49f6866c6a1d3ab',
@@ -30,13 +23,7 @@ const links: Partial<Link>[] = [
 
 export default function ProfileViewPage() {
   return (
-    <AppShell
-      styles={(theme) => ({
-        main: {
-          backgroundColor: theme.colors.gray[0],
-        },
-      })}
-    >
+    <AppContainer>
       <Container size="xs">
         <Stack spacing="xl">
           <Center>
@@ -61,6 +48,6 @@ export default function ProfileViewPage() {
           </Stack>
         </Stack>
       </Container>
-    </AppShell>
+    </AppContainer>
   );
 }

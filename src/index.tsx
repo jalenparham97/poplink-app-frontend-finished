@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { QueryClientProvider, ReactQueryDevtools } from './libs/react-query';
+import { AuthContextProvider } from './context/auth.context';
 import App from './App';
 import './index.css';
 
@@ -35,7 +36,9 @@ root.render(
             },
           }}
         >
-          <App />
+          <AuthContextProvider>
+            <App />
+          </AuthContextProvider>
         </MantineProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
