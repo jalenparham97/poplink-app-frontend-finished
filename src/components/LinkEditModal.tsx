@@ -40,16 +40,19 @@ export default function LinkEditModal({ opened, onClose, link }: Props) {
       id: link._id,
       data: { ...link, ...data },
     });
-    handleClose();
+    onClose();
   };
 
-  const handleClose = () => {
-    reset();
+  const resetClose = () => {
+    reset({
+      title: link?.title,
+      url: link?.url,
+    });
     onClose();
   };
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Create link">
+    <Modal opened={opened} onClose={resetClose} title="Create link">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing="sm">
           <TextInput
@@ -67,7 +70,7 @@ export default function LinkEditModal({ opened, onClose, link }: Props) {
 
           <div className="mt-2">
             <Group spacing="sm" position="right">
-              <Button variant="default" onClick={onClose}>
+              <Button variant="default" onClick={resetClose}>
                 Cancel
               </Button>
               <Button type="submit" loading={isSubmitting}>

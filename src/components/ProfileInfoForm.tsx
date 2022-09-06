@@ -53,14 +53,20 @@ export default function ProfileInfoForm({ profile }: Props) {
   });
 
   const updateProfileMutation = useMutation(updateProfile, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['profiles']);
+    onSuccess: (updatedProfile) => {
+      reset({
+        profileUsername: updatedProfile?.profileUsername,
+        profileName: updatedProfile?.profileName,
+        profileDescription: updatedProfile?.profileDescription,
+      });
+      setHasFileChanged(false);
+      queryClient.invalidateQueries(['profile', profile?._id]);
     },
   });
 
   const deleteProfileMutation = useMutation(deleteProfile, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profiles', user?._id]);
     },
   });
 
@@ -77,8 +83,6 @@ export default function ProfileInfoForm({ profile }: Props) {
         ...data,
       },
     });
-    setHasFileChanged(false);
-    reset();
   };
 
   const onDelete = async () => {

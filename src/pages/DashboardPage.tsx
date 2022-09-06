@@ -15,8 +15,8 @@ export default function DashboardPage() {
   const [opened, handlers] = useDisclosure(false);
 
   const profiles = useQuery(
-    ['profiles'],
-    async () => await getUserProfiles(user!._id)
+    ['profiles', user?._id],
+    async () => await getUserProfiles(user?._id as string)
   );
 
   return (

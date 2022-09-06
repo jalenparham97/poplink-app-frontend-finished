@@ -35,7 +35,7 @@ export default function ProfileCreateModal({ opened, onClose }: Props) {
 
   const addProfileMutation = useMutation(addProfile, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profiles', user?._id]);
     },
   });
 

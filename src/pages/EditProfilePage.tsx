@@ -23,7 +23,7 @@ export default function EditProfilePage() {
   const { id } = useParams();
 
   const { data: profile } = useQuery(
-    ['profile'],
+    ['profile', id],
     async () => await getProfile(id as string)
   );
 
