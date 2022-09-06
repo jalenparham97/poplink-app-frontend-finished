@@ -2,14 +2,29 @@ import { ActionIcon, Group, Paper, Stack, Text } from '@mantine/core';
 import { Link } from '../types/link.types';
 import { IconEdit, IconTrash } from '@tabler/icons';
 import { useDisclosure } from '@mantine/hooks';
+import { deleteLink } from '../services/link.service';
+import { queryClient } from '../libs/react-query';
+import { useMutation } from '@tanstack/react-query';
 import LinkEditModal from './LinkEditModal';
+import DeleteModal from './DeleteModal';
 
 interface Props {
-  link: Partial<Link>;
+  link: Link;
 }
 
 export default function LinkCard({ link }: Props) {
   const [opened, handlers] = useDisclosure(false);
+  const [deleteOpened, deleteHandlers] = useDisclosure(false);
+
+  const deleteLinkMutation = useMutation(deleteLink, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['links']);
+    },
+  });
+
+  const onDelete = async () => {
+    await deleteLinkMutation.mutateAsync(link?._id);
+  };
 
   return (
     <Paper p="lg" radius="md" withBorder className="hover:shadow-md">
@@ -23,7 +38,11 @@ export default function LinkCard({ link }: Props) {
             <ActionIcon variant="default" size="md" onClick={handlers.open}>
               <IconEdit size={16} />
             </ActionIcon>
-            <ActionIcon variant="default" size="md">
+            <ActionIcon
+              variant="default"
+              size="md"
+              onClick={deleteHandlers.open}
+            >
               <IconTrash className="text-red-600" size={16} />
             </ActionIcon>
           </Group>
@@ -43,7 +62,14 @@ export default function LinkCard({ link }: Props) {
         </div>
       </Stack>
 
-      <LinkEditModal opened={opened} onClose={handlers.close} />
+      <LinkEditModal opened={opened} onClose={handlers.close} link={link} />
+      <DeleteModal
+        title="link"
+        opened={deleteOpened}
+        onClose={deleteHandlers.close}
+        onDelete={onDelete}
+        isLoading={deleteLinkMutation.isLoading}
+      />
     </Paper>
   );
 }

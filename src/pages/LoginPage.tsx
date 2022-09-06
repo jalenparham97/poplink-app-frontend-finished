@@ -1,8 +1,25 @@
 import { Anchor, Paper, Title, Text, Container, Button } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { loginWithGoogle } from '../services/auth.service';
+import { useContext } from 'react';
+import { AuthContext } from '../context/auth.context';
 import AppContainer from '../components/AppContainer';
 
 export default function LoginPage() {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const user = await loginWithGoogle();
+    if (user) {
+      navigate('/');
+    }
+  };
+
+  if (user) {
+    navigate('/');
+  }
+
   return (
     <AppContainer>
       <Container size={420} my={100}>
@@ -23,7 +40,13 @@ export default function LoginPage() {
             </Anchor>
           </Text>
 
-          <Button fullWidth mt="xl" variant="default" size="lg">
+          <Button
+            fullWidth
+            mt="xl"
+            variant="default"
+            size="lg"
+            onClick={handleLogin}
+          >
             Login with Google
           </Button>
         </Paper>

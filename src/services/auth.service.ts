@@ -26,7 +26,12 @@ export async function signUpWithGoogle() {
 }
 
 export async function loginWithGoogle() {
-  return await authenticateWithGoogle();
+  const firebaseUser: FirebaseUser = await authenticateWithGoogle();
+  const user = await getLoginUser(firebaseUser.uid);
+  return user;
 }
 
-export async 
+export async function getLoginUser(uid: string) {
+  const response = await axios.get<User>('/auth/login', { params: { uid } });
+  return response.data;
+}

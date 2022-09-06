@@ -1,7 +1,7 @@
 export interface Profile {
   _id: string;
   userId: string;
-  slug: string;
+  profileUsername: string;
   profileName: string;
   profileDescription: string;
   profilePhotoUrl: string;

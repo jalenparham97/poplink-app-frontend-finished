@@ -9,8 +9,8 @@ interface Props {
 export default function ProfileList({ profiles }: Props) {
   return (
     <Stack spacing="xs">
-      {profiles.map((page) => (
-        <ProfileCard profile={page} />
+      {profiles.map((profile) => (
+        <ProfileCard profile={profile} />
       ))}
     </Stack>
   );

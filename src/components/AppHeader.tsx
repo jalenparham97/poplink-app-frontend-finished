@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button, Group, Header, Title } from '@mantine/core';
+import { Header, Title } from '@mantine/core';
 import AccountMenu from './AccountMenu';
 
 export default function AppHeader() {
@@ -10,12 +10,7 @@ export default function AppHeader() {
           <Title order={2}>PopLink</Title>
         </Link>
 
-        <Group spacing="xl">
-          <Button component={Link} to="/" variant="default">
-            Dashboard
-          </Button>
-          <AccountMenu />
-        </Group>
+        <AccountMenu />
       </div>
     </Header>
   );

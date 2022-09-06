@@ -2,14 +2,16 @@ import { Button, Group, Stack, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconPlus } from '@tabler/icons';
 import { Link } from '../types/link.types';
+import { Profile } from '../types/profile.types';
 import LinkCard from './LinkCard';
 import LinkCreateModal from './LinkCreateModal';
 
 interface Props {
   links: Link[];
+  profile: Profile;
 }
 
-export default function LinkList({ links }: Props) {
+export default function LinkList({ links, profile }: Props) {
   const [opened, handlers] = useDisclosure(false);
 
   return (
@@ -27,7 +29,11 @@ export default function LinkList({ links }: Props) {
         ))}
       </Stack>
 
-      <LinkCreateModal opened={opened} onClose={handlers.close} />
+      <LinkCreateModal
+        opened={opened}
+        onClose={handlers.close}
+        profile={profile}
+      />
     </Stack>
   );
 }
