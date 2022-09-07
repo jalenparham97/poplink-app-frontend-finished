@@ -22,13 +22,9 @@ export default function DeleteModal({
   size = 'sm',
 }: Props) {
   const handleDelete = async () => {
-    try {
-      await onDelete();
-      if (!isLoading) {
-        onClose();
-      }
-    } catch (error) {
-      console.log(error);
+    await onDelete();
+    if (!isLoading) {
+      onClose();
     }
   };
 

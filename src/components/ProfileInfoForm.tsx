@@ -12,9 +12,10 @@ import {
   Divider,
   Input,
   Image,
+  Alert,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconDeviceFloppy, IconTrash } from '@tabler/icons';
+import { IconAlertCircle, IconDeviceFloppy, IconTrash } from '@tabler/icons';
 import { Profile } from '../types/profile.types';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '../context/auth.context';
@@ -23,6 +24,8 @@ import { queryClient } from '../libs/react-query';
 import { useMutation } from '@tanstack/react-query';
 import { deleteProfile, updateProfile } from '../services/profile.service';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
+import { BaseError } from '../types/https.types';
 import DeleteModal from './DeleteModal';
 
 interface Props {
@@ -33,6 +36,7 @@ export default function ProfileInfoForm({ profile }: Props) {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [deleteOpened, deleteHandlers] = useDisclosure(false);
+  const [error, setError] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [previewImgUrl, setPreviewImgUrl] = useState(profile.profilePhotoUrl);
   const [hasFileChanged, setHasFileChanged] = useState(
@@ -62,6 +66,13 @@ export default function ProfileInfoForm({ profile }: Props) {
       setHasFileChanged(false);
       queryClient.invalidateQueries(['profile', profile?._id]);
     },
+    onError: (error: AxiosError<BaseError>) => {
+      if (error.response?.data?.type === 'DuplicateKey') {
+        setError(error.response?.data?.message);
+      } else {
+        setError('Oops! Somthing went worng!');
+      }
+    },
   });
 
   const deleteProfileMutation = useMutation(deleteProfile, {
@@ -71,6 +82,7 @@ export default function ProfileInfoForm({ profile }: Props) {
   });
 
   const onSubmit = async (data: Partial<Profile>) => {
+    clearError();
     let profilePhotoUrl = previewImgUrl;
     if (file) {
       profilePhotoUrl = await uploadFile(file, user?._id);
@@ -102,11 +114,26 @@ export default function ProfileInfoForm({ profile }: Props) {
     setHasFileChanged(true);
   };
 
+  const clearError = () => {
+    setError('');
+  };
+
   return (
     <Stack spacing="lg">
       <Paper p="lg" radius="md" withBorder>
         <Stack>
           <Title order={4}>Profile info</Title>
+          {error && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              title="ERROR"
+              color="red"
+              withCloseButton
+              onClose={clearError}
+            >
+              {error}
+            </Alert>
+          )}
           <Stack>
             <div>
               <Input.Wrapper

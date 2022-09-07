@@ -11,6 +11,7 @@ import {
   FileButton,
   Textarea,
   Image,
+  Alert,
 } from '@mantine/core';
 import { Profile } from '../types/profile.types';
 import { useForm } from 'react-hook-form';
@@ -19,11 +20,15 @@ import { queryClient } from '../libs/react-query';
 import { addProfile } from '../services/profile.service';
 import { AuthContext } from '../context/auth.context';
 import { uploadFile } from '../services/storage.service';
+import { IconAlertCircle } from '@tabler/icons';
+import { BaseError } from '../types/https.types';
+import { AxiosError } from 'axios';
 
 interface Props extends ModalProps {}
 
 export default function ProfileCreateModal({ opened, onClose }: Props) {
   const { user } = useContext(AuthContext);
+  const [error, setError] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [previewImgUrl, setPreviewImgUrl] = useState('');
   const {
@@ -37,9 +42,17 @@ export default function ProfileCreateModal({ opened, onClose }: Props) {
     onSuccess: () => {
       queryClient.invalidateQueries(['profiles', user?._id]);
     },
+    onError: (error: AxiosError<BaseError>) => {
+      if (error.response?.data?.type === 'DuplicateKey') {
+        setError(error.response?.data?.message);
+      } else {
+        setError('Oops! Somthing went worng!');
+      }
+    },
   });
 
   const onSubmit = async (data: Partial<Profile>) => {
+    clearError();
     let profilePhotoUrl = '';
     if (file) {
       profilePhotoUrl = await uploadFile(file, user?._id);
@@ -67,11 +80,26 @@ export default function ProfileCreateModal({ opened, onClose }: Props) {
     setPreviewImgUrl('');
   };
 
+  const clearError = () => {
+    setError('');
+  };
+
   return (
     <Modal opened={opened} onClose={handleClose} title="Create profile">
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing="sm">
           <Stack>
+            {error && (
+              <Alert
+                icon={<IconAlertCircle size={16} />}
+                title="ERROR"
+                color="red"
+                withCloseButton
+                onClose={clearError}
+              >
+                {error}
+              </Alert>
+            )}
             <div>
               <Input.Wrapper
                 label="Profile username"
@@ -145,7 +173,7 @@ export default function ProfileCreateModal({ opened, onClose }: Props) {
               <Button variant="default" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button onClick={handleSubmit(onSubmit)} loading={isSubmitting}>
+              <Button type="submit" loading={isSubmitting}>
                 Create profile
               </Button>
             </Group>
