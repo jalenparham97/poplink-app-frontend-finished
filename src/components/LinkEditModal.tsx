@@ -52,7 +52,7 @@ export default function LinkEditModal({ opened, onClose, link }: Props) {
   };
 
   return (
-    <Modal opened={opened} onClose={resetClose} title="Create link">
+    <Modal opened={opened} onClose={resetClose} title="Edit link">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing="sm">
           <TextInput
@@ -74,7 +74,7 @@ export default function LinkEditModal({ opened, onClose, link }: Props) {
                 Cancel
               </Button>
               <Button type="submit" loading={isSubmitting}>
-                Create link
+                Save
               </Button>
             </Group>
           </div>
